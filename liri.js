@@ -9,7 +9,6 @@ var omdbapi = require('npm install omdb-api-pt');
 
 var fs = require('fs');
 
-
 var twitterKeys = twitterKeysObject.twitterKeys;
 
 var userInput = process.argv[2];
@@ -82,7 +81,7 @@ function movie(argument){
   var queryURL = 'http://www.omdbapi.com/?t=' + movie + '&plot=short&tomatoes=true';
 
   request(queryURL, function (error, response, body){
-    if(!error && response.statusCode == 200){
+    if(!error && response.statusCode === 200){
       var body = JSON.parse(body);
 
       console.log("Title: " + body.Title);
@@ -95,14 +94,15 @@ function movie(argument){
       console.log("Rotten Tomatoes Rating: " + body.tomatoRating);
       console.log("Rotten Tomatoes URL: " + body.tomatoURL);
 
-    } else{
-      console.log('Error occurred.')
-    }
-    if(movie === "Mr. Nobody"){
-      console.log("-----------------------");
-      console.log("Haven't seen 'Mr. Nobody?', what's wrong with you! Check it out here: http://www.imdb.com/title/tt0485947/");
+    } 
+    else{
+    	console.log('Error occurred.')
+    };
+    if(movie = "Mr. Nobody"){
+      
+    	console.log("Haven't seen 'Mr. Nobody?', what's wrong with you! Check it out here: http://www.imdb.com/title/tt0485947/");
 
     }
   });
 
-};
+}
