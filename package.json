@@ -10,7 +10,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "request": "^2.81.0"
-    "spotify": "1.0.7"
+    "omdb-api-pt": "^2.0.1",
+    "request": "^2.81.0",
+    "spotify-web-api-node": "^2.5.0",
+    "twitter": "^1.7.1"
   }
 }

@@ -3,7 +3,8 @@ var twitterKeysObject = require('./keys.js');
 // Install these packages from NPM
 var request = require('request');
 var twitter = require('twitter');
-var spotify = require('spotify');
+var spotify = require('spotify-web-api-node');
+var omdbapi = require('npm install omdb-api-pt');
 
 
 var fs = require('fs');
@@ -13,7 +14,7 @@ var twitterKeys = twitterKeysObject.twitterKeys;
 
 var userInput = process.argv[2];
 
-var argument = process.argv[3];
+var name = process.argv[3];
 
 switch (userInput) {
 
@@ -22,11 +23,11 @@ switch (userInput) {
 		break;
 
 	case 'spotify-this-song':
-		mySpotify(argument);
+		mySpotify(name);
 		break;
 
 	case 'movie-this':
-		movieThis(argument);
+		movie(name);
 		break;
 
 	case 'do-what-it-says':
@@ -37,14 +38,6 @@ switch (userInput) {
 		console.log("I HAVE NO IDEA WHAT YOU MEAN");
 
 
-}
-
-var twitterKeys = {
-		  consumer_key: 'sKhlA1EmLLXmJykyKUew6Cr4C',
-		  consumer_secret: 'VPyJKwEO0qsyseekVfTJSJAoi8MgVw9smfVIeOd6xsDODoS69D',
-		  access_token_key: '932797092476551170-6KEDRf58f05HTuTTPiOORDAAWfNJ2dH',
-		  access_token_secret: 'VIexpEtsZjvhI5jKuRZQnCkHitFt0mQGwm9Lk2WjjCXXH',
-};
 
 	function myTweets() {
 
@@ -53,16 +46,63 @@ var twitterKeys = {
 
 	twitterKeys.get('statuses/user_timeline', handle, function(error, tweets, response){
 		
-		  if(!error){
-      for(var i = 0; i<tweets.length; i++){
+	if(!error){
+    	for(var i = 0; i<tweets.length; i++){
         var date = tweets[i].created_at;
-        console.log("@NedCodes: " + tweets[i].text + " Created At: " + date.substring(0, 19));
+        console.log("@NedCodes: " + tweets[i].text + " Created At: " + date.substring(0, 5));
         
-        fs.appendFile('log.txt', "@NedCodes: " + tweets[i].text + " Created At: " + date.substring(0, 19));
+        fs.appendFile('log.txt', "@NedCodes: " + tweets[i].text + " Created At: " + date.substring(0, 5));
      
-      }
+    	}
     }
     else{
       console.log('BIG ERROR!');
-    };
+ 	};
  });
+};
+
+
+function mySpotify(song){
+  spotify.search({ type: 'track', query: song}, function(error, data){
+    if(!error){
+      for(var i = 0; i < data.tracks.items.length; i++){
+        
+        var songs = data.tracks.items[i];
+        console.log("Artist: " + songs.artists[0].name);
+        console.log("Song: " + songs.name);
+        console.log("Preview Site: " + songs.preview_url);
+        console.log("Album: " + songs.album.name);
+   
+    		}
+ 		};
+	});
+};
+
+function movie(argument){
+  var queryURL = 'http://www.omdbapi.com/?t=' + movie + '&plot=short&tomatoes=true';
+
+  request(queryURL, function (error, response, body){
+    if(!error && response.statusCode == 200){
+      var body = JSON.parse(body);
+
+      console.log("Title: " + body.Title);
+      console.log("Release Year: " + body.Year);
+      console.log("IMdB Rating: " + body.imdbRating);
+      console.log("Country: " + body.Country);
+      console.log("Language: " + body.Language);
+      console.log("Plot: " + body.Plot);
+      console.log("Actors: " + body.Actors);
+      console.log("Rotten Tomatoes Rating: " + body.tomatoRating);
+      console.log("Rotten Tomatoes URL: " + body.tomatoURL);
+
+    } else{
+      console.log('Error occurred.')
+    }
+    if(movie === "Mr. Nobody"){
+      console.log("-----------------------");
+      console.log("Haven't seen 'Mr. Nobody?', what's wrong with you! Check it out here: http://www.imdb.com/title/tt0485947/");
+
+    }
+  });
+
+};
